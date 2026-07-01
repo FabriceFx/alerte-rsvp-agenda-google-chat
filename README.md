@@ -34,7 +34,7 @@ Dans votre éditeur Google Apps Script, vous devez impérativement activer l'API
   ```javascript
   const urlWebhook = "VOTRE_WEBHOOK_GOOGLE_CHAT"; // Votre webhook de salon Chat
   const idCalendrier = "primary"; // ID calendrier (laisser "primary" pour le vôtre)
-  const langue = ""; // Optionnel : laisser vide "" pour détecter la langue du compte, ou mettre "FR"/"EN"
+  const langue = "FR"; // Langue de vos alertes : "FR" ou "EN" (par défaut "FR")
   ```
 - Sélectionnez la fonction `configurerInitialisation` dans le menu déroulant de l'éditeur et cliquez sur **Exécuter**. Une fois terminé, vous pouvez effacer ces informations du code si vous le souhaitez, elles sont sauvegardées en sécurité.
 

@@ -208,16 +208,10 @@ const envoyerNotificationChat = (titreReunion, nomInvite, note, lienEvenement, e
         return;
     }
 
-    // Gestion de la langue (détection automatique de la langue du compte si non configurée)
-    let langue = memoire.getProperty("LANGUAGE");
-    if (!langue) {
-        try {
-            langue = Session.getActiveUserLocale().substring(0, 2).toUpperCase();
-        } catch (e) {
-            langue = "FR";
-        }
-    }
-    const t = TRADUCTIONS[langue] || TRADUCTIONS.FR;
+    // Gestion de la langue (Français par défaut, sauf si l'Anglais "EN" est configuré)
+    const langueConfigured = memoire.getProperty("LANGUAGE");
+    const langue = (langueConfigured && langueConfigured.toUpperCase() === "EN") ? "EN" : "FR";
+    const t = TRADUCTIONS[langue];
 
     const cardPayload = {
         cardsV2: [
@@ -306,35 +300,25 @@ const envoyerNotificationChat = (titreReunion, nomInvite, note, lienEvenement, e
  * 
  * @param {string} webhookUrl - URL du webhook Google Chat.
  * @param {string} [idCalendrier="primary"] - Identifiant du calendrier à surveiller.
- * @param {string} [langue=""] - Langue souhaitée ("FR" ou "EN"). Si vide, la langue du compte Google est détectée.
+ * @param {string} [langue="FR"] - Langue souhaitée ("FR" ou "EN"). Par défaut "FR".
  */
-const configurerScript = (webhookUrl, idCalendrier = "primary", langue = "") => {
+const configurerScript = (webhookUrl, idCalendrier = "primary", langue = "FR") => {
     if (!webhookUrl) {
         console.error("Erreur : L'URL du webhook Google Chat est obligatoire.");
         return;
     }
     
+    const codeLangue = langue.toUpperCase() === "EN" ? "EN" : "FR";
     const memoire = PropertiesService.getScriptProperties();
+    
     memoire.setProperty("CHAT_WEBHOOK_URL", webhookUrl);
     memoire.setProperty("CALENDAR_ID", idCalendrier);
-    
-    if (langue) {
-        const codeLangue = langue.toUpperCase() === "EN" ? "EN" : "FR";
-        memoire.setProperty("LANGUAGE", codeLangue);
-        console.log(`- Langue configurée manuellement : ${codeLangue}`);
-    } else {
-        // Supprime l'ancienne configuration pour activer la détection automatique
-        memoire.deleteProperty("LANGUAGE");
-        let langueAuto = "FR";
-        try {
-            langueAuto = Session.getActiveUserLocale().substring(0, 2).toUpperCase();
-        } catch (e) {}
-        console.log(`- Langue : Détection automatique active (Actuellement : ${langueAuto})`);
-    }
+    memoire.setProperty("LANGUAGE", codeLangue);
     
     console.log("Configuration enregistrée avec succès !");
     console.log(`- Webhook Chat : ${webhookUrl}`);
     console.log(`- ID Calendrier : ${idCalendrier}`);
+    console.log(`- Langue : ${codeLangue}`);
 };
 
 /**
@@ -344,7 +328,7 @@ const configurerScript = (webhookUrl, idCalendrier = "primary", langue = "") => 
 const configurerInitialisation = () => {
     const urlWebhook = "VOTRE_WEBHOOK_GOOGLE_CHAT"; // <-- REMPLACEZ ICI PAR VOTRE WEBHOOK
     const idCalendrier = "primary"; // <-- REMPLACEZ ICI SI CALENDRIER SECONDAIRE
-    const langue = ""; // <-- OPTIONNEL : Laissez vide "" pour détecter la langue du compte Google, ou mettez "FR"/"EN"
+    const langue = "FR"; // <-- LANGUE DES ALERTES : "FR" OU "EN"
 
     configurerScript(urlWebhook, idCalendrier, langue);
 };

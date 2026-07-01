@@ -34,7 +34,7 @@ In your Google Apps Script editor, you must enable the Calendar API service:
   ```javascript
   const urlWebhook = "YOUR_GOOGLE_CHAT_WEBHOOK_URL"; // Google Chat webhook URL
   const idCalendrier = "primary"; // Calendar ID ("primary" is default)
-  const langue = ""; // Optional: leave empty "" to auto-detect account language, or set to "EN"/"FR"
+  const langue = "FR"; // Alert language: "FR" or "EN" (defaults to "FR")
   ```
 - Select the `configurerInitialisation` function in the editor toolbar dropdown and click **Run**. Once completed, you may safely delete these credentials from the file as they are stored securely in the script settings.
 
